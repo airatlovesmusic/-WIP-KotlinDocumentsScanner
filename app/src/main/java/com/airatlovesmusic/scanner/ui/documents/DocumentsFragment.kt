@@ -1,4 +1,4 @@
-package com.airatlovesmusic.scanner.ui
+package com.airatlovesmusic.scanner.ui.documents
 
 import android.os.Bundle
 import android.view.View
@@ -9,7 +9,7 @@ import com.airatlovesmusic.scanner.R
  * Created by Airat Khalilov on 17/09/2020.
  */
 
-class MainFragment: Fragment(R.layout.fragment_main) {
+class DocumentsFragment: Fragment(R.layout.fragment_main) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

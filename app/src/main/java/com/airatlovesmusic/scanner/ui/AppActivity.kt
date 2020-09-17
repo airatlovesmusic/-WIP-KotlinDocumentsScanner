@@ -3,6 +3,7 @@ package com.airatlovesmusic.scanner.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.airatlovesmusic.scanner.R
+import com.airatlovesmusic.scanner.ui.documents.DocumentsFragment
 
 /**
  * Created by Airat Khalilov on 17/09/2020.
@@ -15,7 +16,7 @@ class AppActivity: AppCompatActivity() {
         setContentView(R.layout.layout_container)
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment())
+                .replace(R.id.container, DocumentsFragment())
                 .commit()
         }
     }
