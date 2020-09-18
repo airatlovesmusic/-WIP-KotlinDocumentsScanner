@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.airatlovesmusic.scanner.R
 import com.airatlovesmusic.scanner.entity.Document
+import com.airatlovesmusic.scanner.ui.AppActivity
 import com.airatlovesmusic.scanner.ui.documents.adapter.DocumentsAdapter
 import com.airatlovesmusic.scanner.ui.scan.ScanDocumentFragment
 import kotlinx.android.synthetic.main.fragment_documents.*
@@ -28,9 +29,7 @@ class DocumentsFragment: Fragment(R.layout.fragment_documents) {
 
     private val askPermissionForScanner: ActivityResultLauncher<String> =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            childFragmentManager.beginTransaction()
-                .replace(R.id.content, ScanDocumentFragment())
-                .commit()
+            (activity as? AppActivity)?.goToScanDocuments()
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
