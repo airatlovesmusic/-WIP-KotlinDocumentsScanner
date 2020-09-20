@@ -32,7 +32,7 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
             }
             whenStarted {
                 while (isActive) {
-                    val points = withContext(Dispatchers.IO) { viewFinder.bitmap?.let { GetImageCorners().findDocumentCorners(it) } }
+                    val points = withContext(Dispatchers.IO) { viewFinder.bitmap?.let { GetImageCorners().getDocumentEdges(it) } }
                     if (points != null) { hud.onCornersDetected(points) }
                 }
             }
