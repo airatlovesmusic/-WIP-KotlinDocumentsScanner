@@ -14,6 +14,7 @@ import androidx.lifecycle.whenStarted
 import com.airatlovesmusic.scanner.R
 import com.airatlovesmusic.scanner.model.GetImageCorners
 import com.airatlovesmusic.scanner.model.Loader
+import com.airatlovesmusic.scanner.ui.AppActivity
 import kotlinx.android.synthetic.main.fragment_document_scan.*
 import kotlinx.coroutines.*
 import java.lang.Runnable
@@ -33,11 +34,17 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
                 Loader(requireContext()).load {}
             }
             whenStarted {
-                while (isActive) {
-                    val points = withContext(Dispatchers.IO) { viewFinder.bitmap?.let { GetImageCorners().getDocumentEdges(it) } }
-                    if (points != null) { hud.onCornersDetected(points) }
+                var documentFound = false
+                while (!documentFound) {
+                    val bitmap = viewFinder.bitmap
+                    if (bitmap == null) { delay(200); continue }
+                    val corners = withContext(Dispatchers.IO) { GetImageCorners().getDocumentEdges(bitmap) }
+                    if (corners != null) {
+                        documentFound = true
+                        hud.onCornersDetected(corners)
+                        (requireActivity() as AppActivity).goToCrop(bitmap, corners)
+                    }
                     else hud.onCornersNotDetected()
-                    delay(200)
                 }
             }
         }

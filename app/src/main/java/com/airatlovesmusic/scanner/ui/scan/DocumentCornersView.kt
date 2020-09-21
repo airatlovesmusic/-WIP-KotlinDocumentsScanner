@@ -5,8 +5,8 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
-import com.airatlovesmusic.scanner.model.Corners
-import org.opencv.core.Point
+import com.airatlovesmusic.scanner.entity.Corners
+import com.airatlovesmusic.scanner.entity.Point
 import kotlin.math.abs
 
 class DocumentCornersView : View {
@@ -20,15 +20,19 @@ class DocumentCornersView : View {
     private val fillPaint = Paint()
     private var ratioX: Double = 1.0
     private var ratioY: Double = 1.0
-    private var tl: Point = Point()
-    private var tr: Point = Point()
-    private var br: Point = Point()
-    private var bl: Point = Point()
+    private var topLeft: Point = Point()
+    private var topRight: Point = Point()
+    private var bottomRight: Point = Point()
+    private var bottomLeft: Point = Point()
     private val path: Path = Path()
     private var point2Move = Point()
-    private var cropMode = false
     private var latestDownX = 0.0F
     private var latestDownY = 0.0F
+    var cropMode = false
+        set(value) {
+            field = value
+            invalidate()
+        }
 
     init {
         rectPaint.color = Color.parseColor("#3454D1")
@@ -60,16 +64,16 @@ class DocumentCornersView : View {
     fun onCornersDetected(corners: Corners) {
         ratioX = corners.size.width.div(measuredWidth)
         ratioY = corners.size.height.div(measuredHeight)
-        tl = corners.corners[0] ?: Point()
-        tr = corners.corners[1] ?: Point()
-        br = corners.corners[2] ?: Point()
-        bl = corners.corners[3] ?: Point()
+        topLeft = corners.corners.getOrNull(0) ?: Point()
+        topRight = corners.corners.getOrNull(1) ?: Point()
+        bottomRight = corners.corners.getOrNull(2) ?: Point()
+        bottomLeft = corners.corners.getOrNull(3) ?: Point()
         resize()
         path.reset()
-        path.moveTo(tl.x.toFloat(), tl.y.toFloat())
-        path.lineTo(tr.x.toFloat(), tr.y.toFloat())
-        path.lineTo(br.x.toFloat(), br.y.toFloat())
-        path.lineTo(bl.x.toFloat(), bl.y.toFloat())
+        path.moveTo(topLeft.x.toFloat(), topLeft.y.toFloat())
+        path.lineTo(topRight.x.toFloat(), topRight.y.toFloat())
+        path.lineTo(bottomRight.x.toFloat(), bottomRight.y.toFloat())
+        path.lineTo(bottomLeft.x.toFloat(), bottomLeft.y.toFloat())
         path.close()
 
         invalidate()
@@ -85,10 +89,10 @@ class DocumentCornersView : View {
         canvas?.drawPath(path, fillPaint)
         canvas?.drawPath(path, rectPaint)
         if (cropMode) {
-            canvas?.drawCircle(tl.x.toFloat(), tl.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(tr.x.toFloat(), tr.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(bl.x.toFloat(), bl.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(br.x.toFloat(), br.y.toFloat(), 20F, circlePaint)
+            canvas?.drawCircle(topLeft.x.toFloat(), topLeft.y.toFloat(), 20F, circlePaint)
+            canvas?.drawCircle(topRight.x.toFloat(), topRight.y.toFloat(), 20F, circlePaint)
+            canvas?.drawCircle(bottomLeft.x.toFloat(), bottomLeft.y.toFloat(), 20F, circlePaint)
+            canvas?.drawCircle(bottomRight.x.toFloat(), bottomRight.y.toFloat(), 20F, circlePaint)
         }
     }
 
@@ -115,28 +119,28 @@ class DocumentCornersView : View {
     }
 
     private fun calculatePoint2Move(downX: Float, downY: Float) {
-        val points = listOf(tl, tr, br, bl)
-        point2Move = points.minBy { abs((it.x - downX).times(it.y - downY)) } ?: tl
+        val points = listOf(topLeft, topRight, bottomRight, bottomLeft)
+        point2Move = points.minBy { abs((it.x - downX).times(it.y - downY)) } ?: topLeft
     }
 
     private fun movePoints() {
         path.reset()
-        path.moveTo(tl.x.toFloat(), tl.y.toFloat())
-        path.lineTo(tr.x.toFloat(), tr.y.toFloat())
-        path.lineTo(br.x.toFloat(), br.y.toFloat())
-        path.lineTo(bl.x.toFloat(), bl.y.toFloat())
+        path.moveTo(topLeft.x.toFloat(), topLeft.y.toFloat())
+        path.lineTo(topRight.x.toFloat(), topRight.y.toFloat())
+        path.lineTo(bottomRight.x.toFloat(), bottomRight.y.toFloat())
+        path.lineTo(bottomLeft.x.toFloat(), bottomLeft.y.toFloat())
         path.close()
         invalidate()
     }
 
     private fun resize() {
-        tl.x = tl.x.div(ratioX)
-        tl.y = tl.y.div(ratioY)
-        tr.x = tr.x.div(ratioX)
-        tr.y = tr.y.div(ratioY)
-        br.x = br.x.div(ratioX)
-        br.y = br.y.div(ratioY)
-        bl.x = bl.x.div(ratioX)
-        bl.y = bl.y.div(ratioY)
+        topLeft.x = topLeft.x.div(ratioX)
+        topLeft.y = topLeft.y.div(ratioY)
+        topRight.x = topRight.x.div(ratioX)
+        topRight.y = topRight.y.div(ratioY)
+        bottomRight.x = bottomRight.x.div(ratioX)
+        bottomRight.y = bottomRight.y.div(ratioY)
+        bottomLeft.x = bottomLeft.x.div(ratioX)
+        bottomLeft.y = bottomLeft.y.div(ratioY)
     }
 }

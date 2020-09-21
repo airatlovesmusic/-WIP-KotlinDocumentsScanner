@@ -1,13 +1,15 @@
 package com.airatlovesmusic.scanner.model
 
 import android.graphics.Bitmap
+import com.airatlovesmusic.scanner.entity.Corners
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import org.opencv.imgproc.Imgproc.COLOR_BGR2GRAY
 import kotlin.math.abs
 import kotlin.math.sqrt
-
+import com.airatlovesmusic.scanner.entity.Size as PSize
+import com.airatlovesmusic.scanner.entity.Point as PPoint
 
 class GetImageCorners {
 
@@ -40,8 +42,8 @@ class GetImageCorners {
         }
         return documentContours?.let {
             Corners(
-                it.toList(),
-                image.size()
+                it.toList().map { PPoint(it.x, it.y) },
+                PSize(image.width().toDouble(), image.height().toDouble())
             )
         }
     }
