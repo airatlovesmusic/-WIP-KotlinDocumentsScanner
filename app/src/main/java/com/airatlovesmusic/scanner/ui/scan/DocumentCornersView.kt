@@ -5,10 +5,11 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import com.airatlovesmusic.scanner.model.Corners
 import org.opencv.core.Point
 import kotlin.math.abs
 
-class DocumentRectangle : View {
+class DocumentCornersView : View {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attributes: AttributeSet) : super(context, attributes)

@@ -1,4 +1,4 @@
-package com.airatlovesmusic.scanner.ui.scan
+package com.airatlovesmusic.scanner.model
 
 import org.opencv.core.Point
 import org.opencv.core.Size
