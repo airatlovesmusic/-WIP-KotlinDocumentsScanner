@@ -12,8 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
 import androidx.lifecycle.whenStarted
 import com.airatlovesmusic.scanner.R
-import com.airatlovesmusic.scanner.model.GetImageCorners
-import com.airatlovesmusic.scanner.model.Loader
+import com.airatlovesmusic.scanner.model.opencv.GetImageCorners
+import com.airatlovesmusic.scanner.model.opencv.Loader
 import com.airatlovesmusic.scanner.ui.AppActivity
 import kotlinx.android.synthetic.main.fragment_document_scan.*
 import kotlinx.coroutines.*
@@ -22,6 +22,7 @@ import java.lang.Runnable
 class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
 
     private lateinit var camera: Camera
+
     private val cameraSelector = CameraSelector.Builder()
         .requireLensFacing(CameraSelector.LENS_FACING_BACK)
         .build()
@@ -42,6 +43,7 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
                     if (corners != null) {
                         documentFound = true
                         hud.onCornersDetected(corners)
+                        // todo don't use bitmap, capture image with cameraX
                         (requireActivity() as AppActivity).goToCrop(bitmap, corners)
                     }
                     else hud.onCornersNotDetected()

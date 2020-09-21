@@ -7,7 +7,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import com.airatlovesmusic.scanner.R
 import com.airatlovesmusic.scanner.entity.Corners
-import com.airatlovesmusic.scanner.model.TransformImage
+import com.airatlovesmusic.scanner.model.opencv.TransformDocumentImage
 import kotlinx.android.synthetic.main.fragment_crop.*
 
 class CropDocumentFragment: Fragment(R.layout.fragment_crop) {
@@ -21,7 +21,7 @@ class CropDocumentFragment: Fragment(R.layout.fragment_crop) {
         iv_preview.setImageBitmap(preview)
         hud.post { hud.onCornersDetected(corners) }
         btn_crop.setOnClickListener {
-            val bitmap = TransformImage().getTranformedDocument(preview, hud.getPoints())
+            val bitmap = TransformDocumentImage().getTranformedDocumentImage(preview, hud.getPoints())
             hud.onCornersNotDetected()
             iv_preview.setImageBitmap(bitmap)
         }

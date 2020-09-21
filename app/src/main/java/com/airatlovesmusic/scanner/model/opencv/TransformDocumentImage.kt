@@ -1,4 +1,4 @@
-package com.airatlovesmusic.scanner.model
+package com.airatlovesmusic.scanner.model.opencv
 
 import android.graphics.Bitmap
 import org.opencv.android.Utils
@@ -7,9 +7,9 @@ import org.opencv.imgproc.Imgproc
 import java.util.*
 
 
-class TransformImage {
+class TransformDocumentImage {
 
-    fun getTranformedDocument(
+    fun getTranformedDocumentImage(
         bitmap: Bitmap,
         points: List<Point>
     ): Bitmap? {

@@ -1,4 +1,4 @@
-package com.airatlovesmusic.scanner.model
+package com.airatlovesmusic.scanner.model.opencv
 
 import android.content.Context
 import org.opencv.android.BaseLoaderCallback

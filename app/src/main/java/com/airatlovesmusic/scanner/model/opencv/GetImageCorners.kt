@@ -1,4 +1,4 @@
-package com.airatlovesmusic.scanner.model
+package com.airatlovesmusic.scanner.model.opencv
 
 import android.graphics.Bitmap
 import com.airatlovesmusic.scanner.entity.Corners
