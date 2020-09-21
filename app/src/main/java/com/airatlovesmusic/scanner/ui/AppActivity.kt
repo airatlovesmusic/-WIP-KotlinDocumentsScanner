@@ -3,10 +3,9 @@ package com.airatlovesmusic.scanner.ui
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.replace
 import com.airatlovesmusic.scanner.R
 import com.airatlovesmusic.scanner.entity.Corners
-import com.airatlovesmusic.scanner.ui.crop.CropImageFragment
+import com.airatlovesmusic.scanner.ui.crop.CropDocumentFragment
 import com.airatlovesmusic.scanner.ui.documents.DocumentsFragment
 import com.airatlovesmusic.scanner.ui.scan.ScanDocumentFragment
 
@@ -22,6 +21,7 @@ class AppActivity: AppCompatActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .replace(R.id.container, DocumentsFragment())
+                .addToBackStack(null)
                 .commit()
         }
     }
@@ -29,12 +29,14 @@ class AppActivity: AppCompatActivity() {
     fun goToScanDocuments() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, ScanDocumentFragment())
+            .addToBackStack(null)
             .commit()
     }
 
     fun goToCrop(bitmap: Bitmap, corners: Corners) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, CropImageFragment.create(bitmap, corners))
+            .replace(R.id.container, CropDocumentFragment.create(bitmap, corners))
+            .addToBackStack(null)
             .commit()
     }
 

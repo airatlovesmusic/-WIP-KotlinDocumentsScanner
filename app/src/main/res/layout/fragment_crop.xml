@@ -16,4 +16,22 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_rescan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|start"
+        android:layout_margin="16dp"
+        android:text="Переснять"
+        style="@style/Widget.MaterialComponents.Button"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_crop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:text="Готово"
+        style="@style/Widget.MaterialComponents.Button"/>
+
 </FrameLayout>

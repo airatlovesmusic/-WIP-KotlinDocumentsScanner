@@ -84,6 +84,9 @@ class DocumentCornersView : View {
         invalidate()
     }
 
+    fun getPoints() =
+        listOf(topLeft, topRight, bottomRight, bottomLeft).map { org.opencv.core.Point(it.x, it.y) }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         canvas?.drawPath(path, fillPaint)
