@@ -27,15 +27,19 @@ class DocumentsFragment: Fragment(R.layout.fragment_documents) {
         DocumentsAdapter().apply { updateList((0..10).map { Document() }) }
     }
 
-    private val askPermissionForScanner: ActivityResultLauncher<String> =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) {
-            (activity as? AppActivity)?.goToScanDocuments()
+    private val askPermissionForScanner: ActivityResultLauncher<Array<String>> =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            if (it.all { it.value }) (activity as? AppActivity)?.goToScanDocuments()
         }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
-        fab_new.setOnClickListener { askPermissionForScanner.launch(android.Manifest.permission.CAMERA) }
+        fab_new.setOnClickListener {
+            askPermissionForScanner.launch(
+                arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            )
+        }
     }
 
     private fun initRecycler() {

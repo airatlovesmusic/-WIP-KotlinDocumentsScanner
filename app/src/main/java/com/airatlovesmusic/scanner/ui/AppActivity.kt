@@ -1,6 +1,6 @@
 package com.airatlovesmusic.scanner.ui
 
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.airatlovesmusic.scanner.R
@@ -33,9 +33,9 @@ class AppActivity: AppCompatActivity() {
             .commit()
     }
 
-    fun goToCrop(bitmap: Bitmap, corners: Corners) {
+    fun goToCrop(uri: Uri, corners: Corners) {
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, CropDocumentFragment.create(bitmap, corners))
+            .replace(R.id.container, CropDocumentFragment.create(uri, corners))
             .addToBackStack(null)
             .commit()
     }

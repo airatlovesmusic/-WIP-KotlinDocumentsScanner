@@ -12,12 +12,15 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
 import androidx.lifecycle.whenStarted
 import com.airatlovesmusic.scanner.R
+import com.airatlovesmusic.scanner.entity.Corners
 import com.airatlovesmusic.scanner.model.opencv.GetImageCorners
 import com.airatlovesmusic.scanner.model.opencv.Loader
 import com.airatlovesmusic.scanner.ui.AppActivity
 import kotlinx.android.synthetic.main.fragment_document_scan.*
 import kotlinx.coroutines.*
+import java.io.File
 import java.lang.Runnable
+import java.util.*
 
 class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
 
@@ -26,6 +29,11 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
     private val cameraSelector = CameraSelector.Builder()
         .requireLensFacing(CameraSelector.LENS_FACING_BACK)
         .build()
+
+    private val imageCapture: ImageCapture by lazy {
+        ImageCapture.Builder()
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,8 +51,7 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
                     if (corners != null) {
                         documentFound = true
                         hud.onCornersDetected(corners)
-                        // todo don't use bitmap, capture image with cameraX
-                        (requireActivity() as AppActivity).goToCrop(bitmap, corners)
+                        takePicture(corners)
                     }
                     else hud.onCornersNotDetected()
                 }
@@ -57,6 +64,26 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
         setUpTapToFocus()
     }
 
+    private fun takePicture(corners: Corners) {
+        val photoFile = File(
+            getOutputDirectory(),
+            UUID.randomUUID().toString() + ".jpg"
+        )
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
+        imageCapture.takePicture(
+            outputOptions,
+            ContextCompat.getMainExecutor(requireContext()),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    (requireActivity() as AppActivity).goToCrop(outputFileResults.savedUri!!, corners)
+                }
+                override fun onError(exception: ImageCaptureException) {
+                    exception.printStackTrace()
+                }
+            }
+        )
+    }
+
     private fun initCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
         cameraProviderFuture.addListener(Runnable {
@@ -66,9 +93,18 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
                 .also { it.setSurfaceProvider(viewFinder.surfaceProvider) }
             runCatching {
                 cameraProvider.unbindAll()
-                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview)
+                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
             }.onFailure { it.printStackTrace() }
         }, ContextCompat.getMainExecutor(requireActivity()))
+    }
+
+    private fun getOutputDirectory(): File {
+        val appContext = requireContext().applicationContext
+        val mediaDir = activity?.externalMediaDirs?.firstOrNull()?.let {
+            File(it, appContext.resources.getString(R.string.app_name)).apply { mkdirs() }
+        }
+        return if (mediaDir != null && mediaDir.exists())
+            mediaDir else appContext.filesDir
     }
 
     @SuppressLint("ClickableViewAccessibility")
