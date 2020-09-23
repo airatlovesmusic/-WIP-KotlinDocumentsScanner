@@ -123,7 +123,7 @@ class DocumentCornersView : View {
 
     private fun calculatePoint2Move(downX: Float, downY: Float) {
         val points = listOf(topLeft, topRight, bottomRight, bottomLeft)
-        point2Move = points.minBy { abs((it.x - downX).times(it.y - downY)) } ?: topLeft
+        point2Move = points.minByOrNull { abs((it.x - downX).times(it.y - downY)) } ?: topLeft
     }
 
     private fun movePoints() {
