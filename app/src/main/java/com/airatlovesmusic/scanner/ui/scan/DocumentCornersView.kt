@@ -7,27 +7,32 @@ import android.view.MotionEvent
 import android.view.View
 import com.airatlovesmusic.scanner.entity.Corners
 import com.airatlovesmusic.scanner.entity.Point
+import org.opencv.core.Point as OpenCVPoint
 import kotlin.math.abs
 
-class DocumentCornersView : View {
-
-    constructor(context: Context) : super(context)
-    constructor(context: Context, attributes: AttributeSet) : super(context, attributes)
-    constructor(context: Context, attributes: AttributeSet, defTheme: Int) : super(context, attributes, defTheme)
+class DocumentCornersView @JvmOverloads constructor(
+    context: Context,
+    attributes: AttributeSet? = null,
+) : View(context, attributes) {
 
     private val rectPaint = Paint()
     private val circlePaint = Paint()
     private val fillPaint = Paint()
+    private val path: Path = Path()
+
     private var ratioX: Double = 1.0
     private var ratioY: Double = 1.0
     private var topLeft: Point = Point()
     private var topRight: Point = Point()
     private var bottomRight: Point = Point()
     private var bottomLeft: Point = Point()
-    private val path: Path = Path()
     private var point2Move = Point()
+    private val points: List<Point>
+        get() = listOf(topLeft, topRight, bottomRight, bottomLeft)
+
     private var latestDownX = 0.0F
     private var latestDownY = 0.0F
+
     var cropMode = false
         set(value) {
             field = value
@@ -35,30 +40,36 @@ class DocumentCornersView : View {
         }
 
     init {
-        rectPaint.color = Color.parseColor("#3454D1")
-        rectPaint.isAntiAlias = true
-        rectPaint.isDither = true
-        rectPaint.strokeWidth = 6F
-        rectPaint.style = Paint.Style.STROKE
-        rectPaint.strokeJoin = Paint.Join.ROUND // set the join to round you want
-        rectPaint.strokeCap = Paint.Cap.ROUND // set the paint cap to round too
-        rectPaint.pathEffect = CornerPathEffect(10f)
+        with(rectPaint) {
+            color = Color.parseColor("#3454D1")
+            isAntiAlias = true
+            isDither = true
+            strokeWidth = 6F
+            style = Paint.Style.STROKE
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+            pathEffect = CornerPathEffect(10f)
+        }
 
-        fillPaint.color = Color.parseColor("#3454D1")
-        fillPaint.alpha = 60
-        fillPaint.isAntiAlias = true
-        fillPaint.isDither = true
-        fillPaint.strokeWidth = 6F
-        fillPaint.style = Paint.Style.FILL
-        fillPaint.strokeJoin = Paint.Join.ROUND // set the join to round you want
-        fillPaint.strokeCap = Paint.Cap.ROUND // set the paint cap to round too
-        fillPaint.pathEffect = CornerPathEffect(10f)
+        with(fillPaint) {
+            color = Color.parseColor("#3454D1")
+            alpha = 60
+            isAntiAlias = true
+            isDither = true
+            strokeWidth = 6F
+            style = Paint.Style.FILL
+            strokeJoin = Paint.Join.ROUND
+            strokeCap = Paint.Cap.ROUND
+            pathEffect = CornerPathEffect(10f)
+        }
 
-        circlePaint.color = Color.LTGRAY
-        circlePaint.isDither = true
-        circlePaint.isAntiAlias = true
-        circlePaint.strokeWidth = 4F
-        circlePaint.style = Paint.Style.STROKE
+        with(circlePaint) {
+            color = Color.LTGRAY
+            isDither = true
+            isAntiAlias = true
+            strokeWidth = 4F
+            style = Paint.Style.STROKE
+        }
     }
 
     fun onCornersDetected(corners: Corners) {
@@ -69,13 +80,14 @@ class DocumentCornersView : View {
         bottomRight = corners.corners.getOrNull(2) ?: Point()
         bottomLeft = corners.corners.getOrNull(3) ?: Point()
         resize()
-        path.reset()
-        path.moveTo(topLeft.x.toFloat(), topLeft.y.toFloat())
-        path.lineTo(topRight.x.toFloat(), topRight.y.toFloat())
-        path.lineTo(bottomRight.x.toFloat(), bottomRight.y.toFloat())
-        path.lineTo(bottomLeft.x.toFloat(), bottomLeft.y.toFloat())
-        path.close()
-
+        with(path) {
+            reset()
+            moveTo(topLeft.x.toFloat(), topLeft.y.toFloat())
+            lineTo(topRight.x.toFloat(), topRight.y.toFloat())
+            lineTo(bottomRight.x.toFloat(), bottomRight.y.toFloat())
+            lineTo(bottomLeft.x.toFloat(), bottomLeft.y.toFloat())
+            close()
+        }
         invalidate()
     }
 
@@ -84,8 +96,7 @@ class DocumentCornersView : View {
         invalidate()
     }
 
-    fun getPoints() =
-        listOf(topLeft, topRight, bottomRight, bottomLeft).map { org.opencv.core.Point(it.x, it.y) }
+    fun getOpenCVPoints() = points.map { OpenCVPoint(it.x, it.y) }
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
@@ -122,17 +133,18 @@ class DocumentCornersView : View {
     }
 
     private fun calculatePoint2Move(downX: Float, downY: Float) {
-        val points = listOf(topLeft, topRight, bottomRight, bottomLeft)
         point2Move = points.minByOrNull { abs((it.x - downX).times(it.y - downY)) } ?: topLeft
     }
 
     private fun movePoints() {
-        path.reset()
-        path.moveTo(topLeft.x.toFloat(), topLeft.y.toFloat())
-        path.lineTo(topRight.x.toFloat(), topRight.y.toFloat())
-        path.lineTo(bottomRight.x.toFloat(), bottomRight.y.toFloat())
-        path.lineTo(bottomLeft.x.toFloat(), bottomLeft.y.toFloat())
-        path.close()
+        with(path) {
+            reset()
+            moveTo(topLeft.x.toFloat(), topLeft.y.toFloat())
+            lineTo(topRight.x.toFloat(), topRight.y.toFloat())
+            lineTo(bottomRight.x.toFloat(), bottomRight.y.toFloat())
+            lineTo(bottomLeft.x.toFloat(), bottomLeft.y.toFloat())
+            close()
+        }
         invalidate()
     }
 

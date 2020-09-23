@@ -1,10 +1,8 @@
 package com.airatlovesmusic.scanner.ui.crop
 
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
 import androidx.core.net.toFile
 import androidx.core.os.bundleOf
@@ -26,7 +24,7 @@ class CropDocumentFragment: Fragment(R.layout.fragment_crop) {
         hud.post { hud.onCornersDetected(corners) }
         btn_crop.setOnClickListener {
             val preview = BitmapFactory.decodeFile(uri.toFile().name)
-            val bitmap = TransformDocumentImage().getTranformedDocumentImage(preview, hud.getPoints())
+            val bitmap = TransformDocumentImage().getTranformedDocumentImage(preview, hud.getOpenCVPoints())
             hud.onCornersNotDetected()
             iv_preview.setImageBitmap(bitmap)
         }

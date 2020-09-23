@@ -86,7 +86,7 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
 
     private fun initCamera() {
         val cameraProviderFuture = ProcessCameraProvider.getInstance(requireActivity())
-        cameraProviderFuture.addListener(Runnable {
+        cameraProviderFuture.addListener({
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
             val preview = Preview.Builder()
                 .build()
