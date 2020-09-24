@@ -13,7 +13,7 @@ import com.airatlovesmusic.scanner.entity.Point as PPoint
 
 class GetImageCorners {
 
-    fun getDocumentEdges(bitmap: Bitmap): Corners? {
+    fun getDocumentEdges(bitmap: Bitmap): List<PPoint>? {
         val image = Mat().also { Utils.bitmapToMat(bitmap, it) }
         val edged = Mat().also {
             Imgproc.cvtColor(image, it, COLOR_BGR2GRAY)
@@ -40,12 +40,7 @@ class GetImageCorners {
                 break
             }
         }
-        return documentContours?.let {
-            Corners(
-                it.toList().map { PPoint(it.x, it.y) },
-                PSize(image.width().toDouble(), image.height().toDouble())
-            )
-        }
+        return documentContours?.toList()?.map { PPoint(it.x, it.y) }
     }
 
     private fun isRectangle(mat: MatOfPoint2f, srcArea: Int): Boolean {

@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.airatlovesmusic.scanner.R
 import com.airatlovesmusic.scanner.entity.Corners
+import com.airatlovesmusic.scanner.entity.Point
 import com.airatlovesmusic.scanner.ui.crop.CropDocumentFragment
 import com.airatlovesmusic.scanner.ui.documents.DocumentsFragment
 import com.airatlovesmusic.scanner.ui.scan.ScanDocumentFragment
@@ -33,7 +34,7 @@ class AppActivity: AppCompatActivity() {
             .commit()
     }
 
-    fun goToCrop(uri: Uri, corners: Corners) {
+    fun goToCrop(uri: Uri, corners: List<Point>) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, CropDocumentFragment.create(uri, corners))
             .addToBackStack(null)

@@ -72,13 +72,11 @@ class DocumentCornersView @JvmOverloads constructor(
         }
     }
 
-    fun onCornersDetected(corners: Corners) {
-        ratioX = corners.size.width.div(measuredWidth)
-        ratioY = corners.size.height.div(measuredHeight)
-        topLeft = corners.corners.getOrNull(0) ?: Point()
-        topRight = corners.corners.getOrNull(1) ?: Point()
-        bottomRight = corners.corners.getOrNull(2) ?: Point()
-        bottomLeft = corners.corners.getOrNull(3) ?: Point()
+    fun onCornersDetected(corners: List<Point>) {
+        topLeft = corners.getOrNull(0) ?: Point()
+        topRight = corners.getOrNull(1) ?: Point()
+        bottomRight = corners.getOrNull(2) ?: Point()
+        bottomLeft = corners.getOrNull(3) ?: Point()
         resize()
         with(path) {
             reset()
@@ -93,20 +91,23 @@ class DocumentCornersView @JvmOverloads constructor(
 
     fun onCornersNotDetected() {
         path.reset()
+        circlePaint.reset()
         invalidate()
     }
 
     fun getOpenCVPoints() = points.map { OpenCVPoint(it.x, it.y) }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        canvas?.drawPath(path, fillPaint)
-        canvas?.drawPath(path, rectPaint)
-        if (cropMode) {
-            canvas?.drawCircle(topLeft.x.toFloat(), topLeft.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(topRight.x.toFloat(), topRight.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(bottomLeft.x.toFloat(), bottomLeft.y.toFloat(), 20F, circlePaint)
-            canvas?.drawCircle(bottomRight.x.toFloat(), bottomRight.y.toFloat(), 20F, circlePaint)
+        with(canvas) {
+            drawPath(path, fillPaint)
+            drawPath(path, rectPaint)
+            if (cropMode) {
+                drawCircle(topLeft.x.toFloat(), topLeft.y.toFloat(), 20F, circlePaint)
+                drawCircle(topRight.x.toFloat(), topRight.y.toFloat(), 20F, circlePaint)
+                drawCircle(bottomLeft.x.toFloat(), bottomLeft.y.toFloat(), 20F, circlePaint)
+                drawCircle(bottomRight.x.toFloat(), bottomRight.y.toFloat(), 20F, circlePaint)
+            }
         }
     }
 
