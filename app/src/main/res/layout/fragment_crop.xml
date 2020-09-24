@@ -9,13 +9,15 @@
         android:id="@+id/iv_preview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:src="@tools:sample/backgrounds/scenic"
-        android:scaleType="centerCrop"/>
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        tools:src="@tools:sample/backgrounds/scenic"/>
 
     <com.airatlovesmusic.scanner.ui.scan.DocumentCornersView
         android:id="@+id/hud"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:background="@android:color/transparent"/>
 
     <com.google.android.material.button.MaterialButton

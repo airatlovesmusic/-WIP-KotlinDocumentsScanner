@@ -20,8 +20,8 @@ class DocumentCornersView @JvmOverloads constructor(
     private val fillPaint = Paint()
     private val path: Path = Path()
 
-    private var ratioX: Double = 1.0
-    private var ratioY: Double = 1.0
+    var ratioX: Double = 1.0
+    var ratioY: Double = 1.0
     private var topLeft: Point = Point()
     private var topRight: Point = Point()
     private var bottomRight: Point = Point()
@@ -72,11 +72,13 @@ class DocumentCornersView @JvmOverloads constructor(
         }
     }
 
-    fun onCornersDetected(corners: List<Point>) {
-        topLeft = corners.getOrNull(0) ?: Point()
-        topRight = corners.getOrNull(1) ?: Point()
-        bottomRight = corners.getOrNull(2) ?: Point()
-        bottomLeft = corners.getOrNull(3) ?: Point()
+    fun onCornersDetected(corners: Corners) {
+        ratioX = corners.size.width.div(measuredWidth)
+        ratioY = corners.size.height.div(measuredHeight)
+        topLeft = corners.corners.getOrNull(0) ?: Point()
+        topRight = corners.corners.getOrNull(1) ?: Point()
+        bottomRight = corners.corners.getOrNull(2) ?: Point()
+        bottomLeft = corners.corners.getOrNull(3) ?: Point()
         resize()
         with(path) {
             reset()
@@ -91,11 +93,10 @@ class DocumentCornersView @JvmOverloads constructor(
 
     fun onCornersNotDetected() {
         path.reset()
-        circlePaint.reset()
         invalidate()
     }
 
-    fun getOpenCVPoints() = points.map { OpenCVPoint(it.x, it.y) }
+    fun getOpenCVPoints() = points.map { OpenCVPoint(it.x.times(ratioX), it.y.times(ratioY)) }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)

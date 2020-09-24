@@ -34,7 +34,7 @@ class AppActivity: AppCompatActivity() {
             .commit()
     }
 
-    fun goToCrop(uri: Uri, corners: List<Point>) {
+    fun goToCrop(uri: Uri, corners: Corners) {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, CropDocumentFragment.create(uri, corners))
             .addToBackStack(null)

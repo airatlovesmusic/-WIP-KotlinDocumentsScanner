@@ -1,31 +1,32 @@
 package com.airatlovesmusic.scanner.ui.crop
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
+import android.graphics.*
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import android.view.View
 import android.widget.ImageView
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.os.bundleOf
-import androidx.core.view.drawToBitmap
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.whenCreated
 import com.airatlovesmusic.scanner.R
-import com.airatlovesmusic.scanner.entity.Point
+import com.airatlovesmusic.scanner.entity.Corners
 import com.airatlovesmusic.scanner.model.opencv.Loader
 import com.airatlovesmusic.scanner.model.opencv.TransformDocumentImage
 import kotlinx.android.synthetic.main.fragment_crop.*
 import kotlinx.coroutines.launch
+import org.opencv.core.Point
 import java.io.FileDescriptor
+
 
 class CropDocumentFragment: Fragment(R.layout.fragment_crop) {
 
     private val uri by lazy { requireArguments().getParcelable<Uri>(ARG_URI) as Uri }
-    private val corners by lazy { requireArguments().getParcelableArray(ARG_CORNERS)?.toList()?.filterIsInstance<Point>() ?: listOf<Point>() }
+    private val corners by lazy { requireArguments().getParcelable<Corners>(ARG_CORNERS) as Corners }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,15 +43,18 @@ class CropDocumentFragment: Fragment(R.layout.fragment_crop) {
             hud.onCornersDetected(corners)
         }
         btn_crop.setOnClickListener {
-            val bitmap = TransformDocumentImage().getTranformedDocumentImage(iv_preview.drawToBitmap(), hud.getOpenCVPoints())
+            iv_preview.setImageBitmap(getOriginalBitmap())
+            val bitmap = TransformDocumentImage().getTranformedDocumentImage(
+                iv_preview.drawable.toBitmap(),
+                hud.getOpenCVPoints()
+            )
             hud.onCornersNotDetected()
-            iv_preview.scaleType = ImageView.ScaleType.CENTER
             iv_preview.setImageBitmap(bitmap)
         }
         btn_rescan.setOnClickListener { parentFragmentManager.popBackStack() }
     }
 
-    fun getOriginalBitmap(): Bitmap {
+    private fun getOriginalBitmap(): Bitmap {
         val parcelFileDescriptor: ParcelFileDescriptor =
             requireContext().contentResolver.openFileDescriptor(uri, "r")!!
         val fileDescriptor: FileDescriptor = parcelFileDescriptor.fileDescriptor
@@ -74,10 +78,10 @@ class CropDocumentFragment: Fragment(R.layout.fragment_crop) {
     }
 
     companion object {
-        fun create(uri: Uri, corners: List<Point>) = CropDocumentFragment().apply {
+        fun create(uri: Uri, corners: Corners) = CropDocumentFragment().apply {
             arguments = bundleOf(
                 ARG_URI to uri,
-                ARG_CORNERS to corners.toTypedArray()
+                ARG_CORNERS to corners
             )
         }
         const val ARG_URI = "bitmap"

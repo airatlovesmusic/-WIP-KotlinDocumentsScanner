@@ -1,10 +1,14 @@
 package com.airatlovesmusic.scanner.model.opencv
 
 import android.graphics.Bitmap
+import com.airatlovesmusic.scanner.entity.Corners
 import org.opencv.android.Utils
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
+import java.lang.Math.max
+import java.lang.Math.sqrt
 import java.util.*
+import kotlin.math.pow
 
 
 class TransformDocumentImage {
@@ -12,7 +16,8 @@ class TransformDocumentImage {
     fun getTranformedDocumentImage(
         bitmap: Bitmap,
         points: List<Point>
-    ): Bitmap? {
+    ): Bitmap {
+        println(points)
         val rectangle = MatOfPoint2f()
         rectangle.fromList(points)
         val dstMat: Mat = transform(bitmapToMat(bitmap), rectangle)
