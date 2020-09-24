@@ -16,4 +16,23 @@
         android:layout_height="match_parent"
         android:background="@android:color/transparent"/>
 
+    <ImageButton
+        android:id="@+id/ib_flash_controller"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:src="@drawable/ic_baseline_flash_on_24"
+        android:tint="@android:color/white"
+        android:background="?selectableItemBackgroundBorderless"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+
+    <ImageButton
+        android:id="@+id/ib_capture"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_circle_capture_image"/>
+
 </RelativeLayout>

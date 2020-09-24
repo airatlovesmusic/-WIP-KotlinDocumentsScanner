@@ -35,6 +35,16 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
             .build()
     }
 
+    private var torchEnabled = false
+        set(value) {
+            ib_flash_controller?.setImageResource(
+                if (value) R.drawable.ic_baseline_flash_off_24
+                else R.drawable.ic_baseline_flash_on_24
+            )
+            camera.cameraControl.enableTorch(value)
+            field = value
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initCamera()
@@ -62,6 +72,12 @@ class ScanDocumentFragment: Fragment(R.layout.fragment_document_scan) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpTapToFocus()
+        setOnClickListeners()
+    }
+
+    private fun setOnClickListeners() {
+        ib_flash_controller.setOnClickListener { torchEnabled = !torchEnabled }
+        ib_capture.setOnClickListener { takePicture() }
     }
 
     private fun takePicture(corners: Corners) {

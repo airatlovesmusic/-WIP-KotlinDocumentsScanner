@@ -17,8 +17,8 @@ class GetImageCorners {
         val image = Mat().also { Utils.bitmapToMat(bitmap, it) }
         val edged = Mat().also {
             Imgproc.cvtColor(image, it, COLOR_BGR2GRAY)
-            Imgproc.GaussianBlur(it, it, Size(5.toDouble(), 5.toDouble()), 0.toDouble())
-            Imgproc.Canny(it, it, 75.toDouble(), 200.toDouble())
+            Imgproc.GaussianBlur(it, it, Size(5.0, 5.0), 0.0)
+            Imgproc.Canny(it, it, 75.0, 200.0)
         }
         val contours = mutableListOf<MatOfPoint>()
         Imgproc.findContours(
